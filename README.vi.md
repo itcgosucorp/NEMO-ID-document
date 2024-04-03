@@ -1,4 +1,4 @@
-# NEMO ID document
+# Tài liệu NEMO ID
 
 Tài liệu này mô tả việc triển khai OAuth 2.0 của **NEMO ID** để chứng thực, tuân theo đặc điểm kỹ thuật của [OpenID Connect](https://openid.net/connect/).
 
@@ -123,7 +123,7 @@ _Flow hoạt động của Authorization Code flow with PKCE_
 
 5. [Lấy thông tin người dùng](#5-lấy-thông-tin-người-dùng)
 
-6. [Chứng thực người dùng](#5-lấy-thông-tin-người-dùng)
+6. [Chứng thực người dùng](#6-chứng-thực-người-dùng)
 
 #### 1. Tạo anti-forgery state token, nonce, code verifier và code challenge
 
@@ -290,7 +290,7 @@ Một response thành công cho request này chứa các field sau dưới dạn
   </tr>
   <tr>
     <td><code>refresh_token</code></td>
-    <td>(optional) Trường này chỉ xuất hiện nếu tham số <code>scope</code> trong <a href="#2-gửi-yêu-cầu-chứng-thực-tới-nemo-id">yêu cầu chứng thực</a> có chứa giá trị <code>offline_access</code>. Để biết chi tiết, hãy xem <a href="https://docs.google.com/document/d/1jMipiLECI739CPy4aNHW36CQGzcG16sDWspeOhW-P4E/edit#heading=h.jej89z9jl3tp">Refresh token</a>.</td>
+    <td>(optional) Trường này chỉ xuất hiện nếu tham số <code>scope</code> trong <a href="#2-gửi-yêu-cầu-chứng-thực-tới-nemo-id">yêu cầu chứng thực</a> có chứa giá trị <code>offline_access</code>. Để biết chi tiết, hãy xem <a href="#refresh-token">Refresh token</a>.</td>
   </tr>
 </table>
 
@@ -384,7 +384,7 @@ Ngoài thông tin trong ID token, bạn có thể nhận thêm [thông tin hồ 
 
 Sau khi lấy thông tin người dùng, bạn nên truy vấn cơ sở dữ liệu người dùng (user database) của ứng dụng của bạn.Nếu người dùng đã tồn tại trong cơ sở dữ liệu của bạn, bạn nên bắt đầu một [phiên đăng nhập ứng dụng](#application-session-local-session) cho người dùng đó nếu response của **NEMO ID** đáp ứng tất cả các yêu cầu đăng nhập.
 
-Nếu người dùng không tồn tại trong cơ sở dữ liệu người dùng của bạn, bạn nên chuyển hướng người dùng đến quy trình đăng ký người dùng mới của mình. Bạn có thể tự động đăng ký người dùng dựa trên thông tin bạn nhận được từ Google hoặc ít nhất bạn có thể điền trước nhiều trường mà bạn yêu cầu trên biểu mẫu đăng ký của mình.
+Nếu người dùng không tồn tại trong cơ sở dữ liệu người dùng của bạn, bạn nên chuyển hướng người dùng đến quy trình đăng ký người dùng mới của mình. Bạn có thể tự động đăng ký người dùng dựa trên thông tin bạn nhận được từ **NEMO ID** hoặc ít nhất bạn có thể điền trước nhiều trường mà bạn yêu cầu trên biểu mẫu đăng ký của mình.
 
 
 ## Chủ đề nâng cao
