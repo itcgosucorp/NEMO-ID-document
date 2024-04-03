@@ -278,7 +278,7 @@ Một response thành công cho request này chứa các field sau dưới dạn
   </tr>
   <tr>
     <td><code>id_token</code>page</td>
-    <td>Một [JWT](https://tools.ietf.org/html/rfc7519) chứa thông tin định danh về user được ký bởi **NEMO ID**</td>
+    <td>Một <a href="https://tools.ietf.org/html/rfc7519">JWT</a> chứa thông tin định danh về user được ký bởi <strong>NEMO ID</strong></td>
   </tr>
   <tr>
     <td><code>scope</code></td>
@@ -286,11 +286,11 @@ Một response thành công cho request này chứa các field sau dưới dạn
   </tr>
   <tr>
     <td><code>token_type</code></td>
-    <td>Xác định loại token được trả lại. Tại thời điểm này, trường này luôn có giá trị [Bearer](https://tools.ietf.org/html/rfc6750).</td>
+    <td>Xác định loại token được trả lại. Tại thời điểm này, trường này luôn có giá trị <a href="https://tools.ietf.org/html/rfc6750">Bearer</a>.</td>
   </tr>
   <tr>
     <td><code>refresh_token</code></td>
-    <td>(optional) Trường này chỉ xuất hiện nếu tham số `scope` trong [yêu cầu chứng thực](#2-gửi-yêu-cầu-chứng-thực-tới-nemo-id) có chứa giá trị `offline_access`. Để biết chi tiết, hãy xem [Refresh token](https://docs.google.com/document/d/1jMipiLECI739CPy4aNHW36CQGzcG16sDWspeOhW-P4E/edit#heading=h.jej89z9jl3tp).</td>
+    <td>(optional) Trường này chỉ xuất hiện nếu tham số <code>scope</code> trong <a href="#2-gửi-yêu-cầu-chứng-thực-tới-nemo-id">yêu cầu chứng thực</a> có chứa giá trị <code>offline_access</code>. Để biết chi tiết, hãy xem <a href="https://docs.google.com/document/d/1jMipiLECI739CPy4aNHW36CQGzcG16sDWspeOhW-P4E/edit#heading=h.jej89z9jl3tp">Refresh token</a>.</td>
   </tr>
 </table>
 
@@ -359,22 +359,22 @@ ID token là một JSON object gồm một bộ các cặp name/value. Đây là
   <tr>
     <td><code>iss</code></td>
     <td>always</td>
-    <td>Issuer Identifier cho Issuer của response. Luôn là `https://gid.nemoverse.io` cho **NEMO ID** ID tokens.</td>
+    <td>Issuer Identifier cho Issuer của response. Luôn là <code>https://gid.nemoverse.io</code> cho <strong>NEMO ID</strong> ID tokens.</td>
   </tr>
   <tr>
     <td><code>sub</code></td>
     <td>always</td>
-    <td>Mã định danh cho người dùng, duy nhất trong số tất cả các tài khoản **NEMO ID** và không bao giờ được sử dụng lại. Tài khoản **NEMO ID** có thể có nhiều địa chỉ email tại các thời điểm khác nhau, nhưng giá trị `sub` không bao giờ thay đổi.Sử dụng `sub` trong ứng dụng của bạn làm khóa nhận dạng duy nhất cho người dùng. Độ dài 24 ký tự chữ và số, không phân biệt chữ hoa chữ thường.</td>
+    <td>Mã định danh cho người dùng, duy nhất trong số tất cả các tài khoản <strong>NEMO ID</strong> và không bao giờ được sử dụng lại. Tài khoản <strong>NEMO ID</strong> có thể có nhiều địa chỉ email tại các thời điểm khác nhau, nhưng giá trị <code>sub</code> không bao giờ thay đổi.Sử dụng <code>sub</code> trong ứng dụng của bạn làm khóa nhận dạng duy nhất cho người dùng. Độ dài 24 ký tự chữ và số, không phân biệt chữ hoa chữ thường.</td>
   </tr>
   <tr>
     <td><code>at_hash</code></td>
     <td></td>
-    <td>Access token hash. Cung cấp xác thực rằng access token được ràng buộc với ID token. Nếu ID token được cấp với `access_token` trong Authorization code flow, claim này luôn được bao gồm.</td>
+    <td>Access token hash. Cung cấp xác thực rằng access token được ràng buộc với ID token. Nếu ID token được cấp với <code>access_token</code> trong Authorization code flow, claim này luôn được bao gồm.</td>
   </tr>
   <tr>
     <td><code>nonce</code></td>
     <td></td>
-    <td>Giá trị của `nonce` do ứng dụng của bạn cung cấp trong yêu cầu chứng thực. Bạn nên thực hiện bảo vệ chống lại các cuộc tấn công lặp lại (replay attack) bằng cách đảm bảo nó chỉ xuất hiện một lần.</td>
+    <td>Giá trị của <code>nonce</code> do ứng dụng của bạn cung cấp trong yêu cầu chứng thực. Bạn nên thực hiện bảo vệ chống lại các cuộc tấn công lặp lại (replay attack) bằng cách đảm bảo nó chỉ xuất hiện một lần.</td>
   </tr>
 </table>
 
@@ -941,14 +941,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
         <li><i>code_verifier</i>: Đoạn code được decode từ <i>code_challenge</i> thông qua giải thuật <i>code_challenge_method</i>.</li>
       </ul>
       <p>Ví dụ:</p>
-      <code>
-        {
-          "code": "o0YGAoiEi3ouJDCbPF0b5VdgOwMELe6QVLXiqaC19XJ",
-          "client_id": "nemo",
-          "grant_type": "authorization_code",
-          "redirect_uri": "http://localhost:3000",
-          "code_verifier": "B2D9gzapwlSG4McXvRqw0BiSWYALvASXVzRbHgpz62ZQahVUoOOFmIVEJK70eg3OwQrHDbatMcpUe5Sq2r2nFrKR071URhCtgbHRHxKBa1d5pfp8J9CK6YDCIdl"
-        }
+      <code>{ "code": "o0YGAoiEi3ouJDCbPF0b5VdgOwMELe6QVLXiqaC19XJ", "client_id": "nemo", "grant_type": "authorization_code", "redirect_uri": "http://localhost:3000", "code_verifier": "B2D9gzapwlSG4McXvRqw0BiSWYALvASXVzRbHgpz62ZQahVUoOOFmIVEJK70eg3OwQrHDbatMcpUe5Sq2r2nFrKR071URhCtgbHRHxKBa1d5pfp8J9CK6YDCIdl" }
       </code>
     </td>
   </tr>
