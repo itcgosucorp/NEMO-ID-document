@@ -226,7 +226,7 @@ Phần bên dưới giả định endpoint này là `https://gid.nemoverse.io/to
   </tr>
   <tr>
     <td><code>code</code></td>
-    <td>Authorization code được trả về từ [request ban đầu](#2-gửi-yêu-cầu-chứng-thực-tới-nemo-id).</td>
+    <td>Authorization code được trả về từ <a href="#2-gửi-yêu-cầu-chứng-thực-tới-nemo-id">request ban đầu</a>.</td>
   </tr>
   <tr>
     <td><code>client_id</code></td>
@@ -234,15 +234,15 @@ Phần bên dưới giả định endpoint này là `https://gid.nemoverse.io/to
   </tr>
   <tr>
     <td><code>redirect_uri</code></td>
-    <td>Redirect URI đã được xác thực cho `client_id` chỉ định, như mô tả tại phần [Thiết lập](https://docs.google.com/document/d/1jMipiLECI739CPy4aNHW36CQGzcG16sDWspeOhW-P4E/edit#heading=h.gjbtbd8pqegy).</td>
+    <td>Redirect URI đã được xác thực cho <code>client_id</code> chỉ định, như mô tả tại phần <a href="#thiết-lập">Thiết lập</a>.</td>
   </tr>
   <tr>
     <td><code>grant_type</code></td>
-    <td> Trường này phải chứa giá trị là `authorization_code`, như đã [được xác định trong đặc tả OAuth 2.0](https://tools.ietf.org/html/rfc6749#section-4.1.3).</td>
+    <td> Trường này phải chứa giá trị là <code>authorization_code</code>, như đã <a href="https://tools.ietf.org/html/rfc6749#section-4.1.3">được xác định trong đặc tả OAuth 2.0</a>).</td>
   </tr>
   <tr>
     <td><code>code_verifier</code></td>
-    <td>Giá trị đã dùng để tạo `code_challenge` trong [request ban đầu](#2-gửi-yêu-cầu-chứng-thực-tới-nemo-id).</td>
+    <td>Giá trị đã dùng để tạo <code>code_challenge</code> trong <a href="#2-gửi-yêu-cầu-chứng-thực-tới-nemo-id">request ban đầu</a>.</td>
   </tr>
 </table>
 
@@ -941,8 +941,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
         <li><i>code_verifier</i>: Đoạn code được decode từ <i>code_challenge</i> thông qua giải thuật <i>code_challenge_method</i>.</li>
       </ul>
       <p>Ví dụ:</p>
-      <code>{ "code": "o0YGAoiEi3ouJDCbPF0b5VdgOwMELe6QVLXiqaC19XJ", "client_id": "nemo", "grant_type": "authorization_code", "redirect_uri": "http://localhost:3000", "code_verifier": "B2D9gzapwlSG4McXvRqw0BiSWYALvASXVzRbHgpz62ZQahVUoOOFmIVEJK70eg3OwQrHDbatMcpUe5Sq2r2nFrKR071URhCtgbHRHxKBa1d5pfp8J9CK6YDCIdl" }
-      </code>
+      <code>{ "code": "o0YGAoiEi3ouJDCbPF0b5VdgOwMELe6QVLXiqaC19XJ", "client_id": "nemo", "grant_type": "authorization_code", "redirect_uri": "http://localhost:3000", "code_verifier": "B2D9gzapwlSG4McXvRqw0BiSWYALvASXVzRbHgpz62ZQahVUoOOFmIVEJK70eg3OwQrHDbatMcpUe5Sq2r2nFrKR071URhCtgbHRHxKBa1d5pfp8J9CK6YDCIdl" }</code>
     </td>
   </tr>
   <tr>
