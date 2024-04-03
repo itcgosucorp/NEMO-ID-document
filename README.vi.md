@@ -668,7 +668,7 @@ Vì **NEMO ID** hiếm khi thay đổi các khóa công khai, nên bạn có th�
   <tr>
     <td>gender</td>
     <td>string</td>
-    <td>ID người dùng.</td>
+    <td>Giới tính người dùng.</td>
   </tr>
   <tr>
     <td>profile_picture</td>
@@ -870,7 +870,7 @@ Bạn có thể tránh HTTP round-trip bằng cách caching các giá trị từ
   </tr>
 </table>
 
-Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.com/file/d/1G7l8Oz8i9YgmWOhslU57OlVytKM7LkDh/view?usp=sharing) (Cần request để truy cập).
+Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.com/file/d/1G7l8Oz8i9YgmWOhslU57OlVytKM7LkDh/view?usp=sharing).
 
 
 ### Endpoint authorization
@@ -1005,11 +1005,11 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     </td>
   </tr>
   <tr>
-    <td>Response khi code hợp lệ (200)</td>
+    <td>Response khi token hợp lệ (200)</td>
     <td><code>{ "active": true,   "sub": "62cbcd68c00bc82d38f6fa13",   "client_id": "sia-lms",   "exp": 1667212097,   "iat": 1667208497,   "iss": "https://gid.nemoverse.io",   "scope": "openid profile",   "token_type": "Bearer" }</code></td>
   </tr>
   <tr>
-    <td>Response khi code không hợp lệ (401)</td>
+    <td>Response khi token không hợp lệ (401)</td>
     <td><code>{ "active": false }</code></td>
   </tr>
 </table>
@@ -1045,11 +1045,11 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     <td><code>{ "Authorization": "Bearer [access_token]" }</code></td>
   </tr>
   <tr>
-    <td>Response khi code hợp lệ (200)</td>
+    <td>Response khi token hợp lệ (200)</td>
     <td><code>{ "sub": "62cbcd68c00bc82d38f6fa13",   "name": "tiến huỳnh ",   "gender": "male", "profile_picture": "https://gid.nemoverse.io/public/upload/10-14-Night-f9f9.jpg",   "email": "tien.huynh@gosu.vn",   "email_verified": true,   "phone_number": "",   "phone_number_verified": false }</code></td>
   </tr>
   <tr>
-    <td>Response khi code không hợp lệ (401)</td>
+    <td>Response khi token không hợp lệ (401)</td>
     <td><code>{ "error": "invalid_token",   "error_description": "invalid token provided" }</code></td>
   </tr>
 </table>
@@ -1094,11 +1094,11 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     </td>
   </tr>
   <tr>
-    <td>Response khi code hợp lệ (200)</td>
+    <td>Response khi token hợp lệ (200)</td>
     <td><code>{ "access_token": "fSoRXvSOGq1rJKpuonBWlL_R7SR4_96OBvOL2uRt9pF",   "expires_in": 3600,   "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRkNUdPY293M2lQa1R6SndBZG5kYlFRR2dHNTRucy1JQ1JlaXRYcGFPSDQifQ.eyJzdWIiOiI2MzVjZmU3OTBiY2FkYTA4NTk5OWI0MzQiLCJhdF9oYXNoIjoiTklUZldnX2xJVXU4WjRsMVBQaVNsQSIsImF1ZCI6InNpYS1sbXMiLCJleHAiOjE2NjcyMTk1MDYsImlhdCI6MTY2NzIxNTkwNiwiaXNzIjoiaHR0cHM6Ly9naWQtdWF0Lm5lbW92ZXJzZS5pbyJ9.ki6W_OUnfGYiTPe-0b7Id8C7aWVqTBmnV5V4WJ_9Lh9ayJj9-0mNjHqV3Im1EY21ywPYVQgX4EOiGsThOT18Hn8RAzitN7YMxzLtdck48MhLT92l8VLe4RFGUpUf-eRBbnPJSf7Udb9jJEW9Q_q10zlr8DGmeSEPdsbChw76XF3QTj2d5VXebSGc-_CprF3V1nb4_tT326fFiFB1nNJIbIx1rs4NMKP-VUSx8Z0I50sQ-yREeaopmAqe94fAzB-MZi5EDoK9lG5H01bJsUY5ERI-HhAMbGKGdyVYdEl56W-utdgMqIBJuyGeHy6zXOqKzcKi5QdKea5n6a9K9PQ43w",   "refresh_token": "2yJrqnbZFFkMV2Dw8662wzjNkIYAi3cA36dzX3Clonz",   "scope": "openid profile",   "token_type": "Bearer" }</code></td>
   </tr>
   <tr>
-    <td>Response khi code không hợp lệ (400)</td>
+    <td>Response khi token không hợp lệ (400)</td>
     <td><code>{ "error": "invalid_grant",   "error_description": "grant request is invalid" }</code></td>
   </tr>
 </table>
@@ -1143,7 +1143,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     </td>
   </tr>
   <tr>
-    <td>Response khi code hợp lệ (200)</td>
+    <td>Response khi token hợp lệ (200)</td>
     <td>(Không data).</td>
   </tr>
 </table>

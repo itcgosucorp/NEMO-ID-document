@@ -314,7 +314,7 @@ On your server, your should confirm that the `nonce` contained in `id_token` mat
 
 An ID Token is a [JWT](https://tools.ietf.org/html/rfc7519) (JSON Web Token), that is, a cryptographically signed Base64-encoded JSON object. Normally, it is critical that you [validate an ID](#validating-an-id-token) token before you use it, but since you are communicating directly with Google over an intermediary-free HTTPS channel and using your client secret to authenticate yourself to **NEMO ID**, you can be confident that the token you receive really comes from **NEMO ID** and is valid. If your server passes the ID token to other components of your app, it is extremely important that the other components [validate the token](#validating-an-id-token) before using it.
 
-Vì hầu hết các thư viện API kết hợp quá trình xác thực với công việc giải mã các giá trị được mã hóa base64url và parse JSON bên trong, nên dù sao đi nữa, bạn có thể sẽ xác thực token khi truy cập các claim trong ID token.
+Since most API libraries combine the validation with the work of decoding the base64url-encoded values and parsing the JSON within, you will probably end up validating the token anyway as you access the claims in the ID token.
 
 **An ID token's payload**
 
@@ -431,6 +431,7 @@ See more in the diagram below:
 ### Application session (local session)
 
 After the user successfully logs in, the application receives a set of Tokens (ID Token, Access Token, Refresh Token). **The application self-manages the user's login status within the application**. For example, refer to the diagram below:
+
 ![](/public/images/application-session.png)
 
 
@@ -476,40 +477,39 @@ The following table gives more complete descriptions of the parameters accepted 
   <tr>
     <td><code>scope</code></td>
     <td>(Required)</td>
-    <td>Tham số scope phải bắt đầu bằng giá trị <code>openid</code>, sau đó bao gồm giá trị <code>profile</code>, giá trị <code>email</code> hoặc cả hai.Nếu có giá trị scope <code>profile</code>, thì ID token có thể (nhưng không được bảo đảm) bao gồm các claim <code>profile</code> mặc định của người dùng.Nếu có giá trị scope <code>email</code>, thì ID token sẽ bao gồm các claim <code></code> và <code>email_verified</code>.Ngoài các scope dành riêng cho OpenID này, tham số scope của bạn cũng có thể bao gồm các giá trị scope khác. Tất cả các giá trị scope phải được phân tách bằng khoảng trắng.Để biết thông tin về các scope có sẵn, <a href="#scopes-và-claims">Scopes và Claims</a>.</td>
+    <td>The scope parameter must begin with the <code>openid</code> value and then include the <code>profile</code> value, the <code>email</code> value, or both. If the <code>email</code> scope value is present, the ID token might (but is not guaranteed to) include the user's default <code>profile</code> claims. If the <code>email</code> scope value is present, the ID token includes <code>email</code> and <code>email_verified</code> claims. In addition to these OpenID-specific scopes, your scope argument can also include other scope values. All scope values must be space-separated. For information about available scopes, see <a href="#scopes-và-claims">Scopes và Claims</a>.</td>
   </tr>
   <tr>
     <td><code>state</code></td>
     <td>(Optional, but strongly recommended)</td>
-    <td>Một chuỗi opaque được round-tripped trong giao thức; nghĩa là, nó được trả về dưới dạng tham số URI trong Basic flow, và trong URI <code>#fragment</code> identifier trong Implicit flow.<code>state</code> có thể hữu ích đối với các request và response tương quan.Vì <code>redirect_uri</code> của bạn có thể đoán được, nên việc sử dụng giá trị <code>state</code> có thể giúp bạn đảm bảo hơn rằng kết nối đến là kết quả của một yêu cầu xác thực do ứng dụng của bạn khởi tạo. Nếu bạn <a href="#1-tạo-anti-forgery-state-token-nonce-code-verifier-và-code-challenge">tạo một chuỗi ngẫu nhiên</a> hoặc mã hóa hàm băm của một số client state (ví dụ: cookie) trong biến <code>state</code> này, thì bạn có thể xác thực response để đảm bảo thêm rằng request và response bắt nguồn từ cùng một trình duyệt. Điều này cung cấp khả năng bảo vệ chống lại các cuộc tấn công như cross-site request forgery (CSRF).</td>
     <td>An opaque string that is round-tripped in the protocol; that is to say, it is returned as a URI parameter in the Basic flow, and in the URI <code>#fragment</code> identifier in the Implicit flow.The <code>state</code> can be useful for correlating requests and responses. Because your <code>redirect_uri</code> can be guessed, using a <code>state</code> value can increase your assurance that an incoming connection is the result of an authentication request initiated by your app. If you <a href="#1-create-an-anti-forgery-state-token-nonce-code-verifier-and-code-challenge">generate a random</a> string or encode the hash of some client state (e.g., a cookie) in this state variable, you can validate the response to additionally ensure that the request and response originated in the same browser. This provides protection against attacks such as cross-site request forgery (CSRF).</td>
   </tr>
   <tr>
     <td><code>code_challenge</code></td>
     <td>(Optional, but strongly recommended)</td>
-    <td>Giá trị được tạo ra từ `code_verifier`, để đáp ứng PKCE; xem <a href="#1-tạo-anti-forgery-state-token-nonce-code-verifier-và-code-challenge">Tạo code verifier và code challenge</a>.</td>
+    <td>Value generated from <code>code_verifier</code>, to satisfy PKCE; see <a href="#1-create-an-anti-forgery-state-token-nonce-code-verifier-and-code-challenge">Create code verifier and code challenge</a>.</td>
   </tr>
   <tr>
     <td><code>code_challenge_method</code></td>
     <td>(Optional, but strongly recommended)</td>
-    <td>Trong request của authorization code flow with PKCE của <strong>NEMO ID</strong> phải có giá trị là <code>S256</code></td>
+    <td>In the request of authorization code flow with PKCE of <strong>NEMO ID</strong> must have the value <code>S256</code></td>
   </tr>
   <tr>
     <td><code>login_hint</code></td>
     <td>(Optional)</td>
-    <td>Khi ứng dụng của bạn biết ứng dụng đang cố chứng thực người dùng nào, ứng dụng có thể cung cấp tham số này làm gợi ý cho máy chủ chứng thực. Giá trị có thể là địa chỉ email hoặc chuỗi <code>sub</code>, tương đương với ID của người dùng.</td>
+    <td>When your app knows which user it is trying to authenticate, it can provide this parameter as a hint to the authentication server. The value can be either an email address or the <code>sub</code> string, which is equivalent to the user.</td>
   </tr>
   <tr>
     <td><code>prompt</code></td>
     <td>(Optional)</td>
-    <td>Danh sách các giá trị chuỗi được phân tách bằng khoảng trắng chỉ định liệu máy chủ chứng thực có hiển thị cho người dùng chứng thực lại và consent hay không. Các giá trị có thể là:
+    <td>A space-delimited list of string values that specifies whether the authorization server prompts the user for reauthentication and consent. The possible values are:
       <ul>
-        <li><code>none</code>: Máy chủ ủy quyền không hiển thị bất kỳ màn hình chứng thực hoặc user consent nào; nó sẽ trả về lỗi nếu người dùng chưa được chứng thực và chưa được cấu hình trước sự đồng ý cho các scope được yêu cầu. Bạn có thể sử dụng <code>none</code> để kiểm tra chứng thực và/hoặc sự đồng ý hiện có.</li>
-        <li><code>login</code>: Máy chủ ủy quyền hiển thị cho người dùng chứng thực lại.</li>
-        <li><code>consent</code>: Máy chủ ủy quyền hiển thị cho người dùng đồng ý trước khi trả lại thông tin cho client.</li>
-        <li><code>select_account</code>: Máy chủ ủy quyền hiển thị cho người dùng chọn tài khoản người dùng. Điều này cho phép người dùng chọn tài khoản có phiên hiện tại hoặc chọn đăng nhập tài khoản khác.</li>
-        <li><code>create</code>: Máy chủ ủy quyền hiển thị cho người dùng tạo tài khoản.</li>
-        <li><code>guest</code>: Máy chủ cho phép người dùng đăng nhập dưới dạng tài khoản khách</li>
+        <li><code>none</code>: The authorization server does not display any authentication or user consent screens; it will return an error if the user is not already authenticated and has not pre-configured consent for the requested scopes. You can use <code>none</code> to check for existing authentication and/or consent.</li>
+        <li><code>login</code>: The authorization server prompts the user for login.</li>
+        <li><code>consent</code>: The authorization server prompts the user for consent before returning information to the client.</li>
+        <li><code>select_account</code>: The authorization server prompts the user to select a user account. This allows a user who has multiple accounts at the authorization server to select amongst the multiple accounts that they may have current sessions for.</li>
+        <li><code>create</code>: The authorization server prompts the user for register.</li>
+        <li><code>guest</code>: The authorization server prompts the user for guest login.</li>
       </ul>
     </td>
   </tr>
@@ -517,48 +517,48 @@ The following table gives more complete descriptions of the parameters accepted 
 
 ### Validating an ID token
 
-Bạn cần phải xác thực tất cả ID token trên server của mình trừ khi bạn biết rằng chúng đến trực tiếp từ **NEMO ID**. Ví dụ: server của bạn phải xác minh bất kỳ ID token nào mà server nhận được từ các ứng dụng client của bạn là xác thực.
+You need to validate all ID tokens on your server unless you know that they came directly from **NEMO ID**. For example, your server must verify as authentic any ID tokens it receives from your client apps.
 
-Sau đây là những tình huống phổ biến mà bạn có thể gửi ID token đến server của mình:
+The following are common situations where you might send ID tokens to your server:
 
-- Gửi ID token với các request cần được chứng thực. ID token cho bạn biết người dùng cụ thể tạo request và ID token đó đã được cấp cho client nào.
+- Sending ID tokens with requests that need to be authenticated. The ID tokens tell you the particular user making the request and for which client that ID token was granted.
 
-ID token rất nhạy cảm và có thể bị sử dụng sai nếu bị chặn. Bạn phải đảm bảo rằng các token này được xử lý an toàn bằng cách chỉ truyền chúng qua HTTPS và chỉ qua POST data hoặc trong request headers. Nếu bạn lưu trữ ID token trên máy chủ của mình, bạn cũng phải lưu trữ chúng một cách an toàn.
+ID tokens are sensitive and can be misused if intercepted. You must ensure that these tokens are handled securely by transmitting them only over HTTPS and only via POST data or within request headers. If you store ID tokens on your server, you must also store them securely.
 
-Một điều làm cho các ID token trở nên hữu ích là bạn có thể chuyển chúng quanh các thành phần khác nhau trong ứng dụng của mình. Các thành phần này có thể sử dụng ID token làm cơ chế chứng thực đơn giản để chứng thực ứng dụng và người dùng. Nhưng trước khi bạn có thể sử dụng thông tin trong ID token hoặc dựa vào thông tin đó để xác nhận rằng người dùng đã được chứng thực, bạn **phải** xác thực thông tin đó.
+One thing that makes ID tokens useful is that fact that you can pass them around different components of your app. These components can use an ID token as a lightweight authentication mechanism authenticating the app and the user. But before you can use the information in the ID token or rely on it as an assertion that the user has authenticated, you **must** validate it.
 
-Việc xác thực ID token yêu cầu một số bước:
+Validation of an ID token requires several steps:
 
-1. Xác minh rằng ID token được ký hợp lệ bởi nhà phát hành. Mã thông báo do **NEMO ID** phát hành được ký bằng một trong các chứng chỉ có tại URI được chỉ định trong giá trị metadata `jwks_uri` của [Discovery document](#discovery-document).
+1. Verify that the ID token is properly signed by the issuer. NEMO-ID-issued tokens are signed using one of the certificates found at the URI specified in the `jwks_uri` metadata value of the [Discovery document](#discovery-document).
 
-2. Xác minh rằng giá trị của claim `iss` trong ID token bằng với `https://gid.nemoverse.io` 
+2. Verify that the value of the `iss` claim in the ID token is equal to `https://gid.nemoverse.io` 
 
-3. Xác minh rằng giá trị của claim `aud` claim trong ID token bằng với client ID của ứng dụng của bạn.
+3. Verify that the value of the `aud` claim in the ID token is equal to your app's client ID.
 
-4. Xác minh rằng thời gian hết hạn (claim `exp`) của ID token chưa qua.
+4. Verify that the expiry time (`exp` claim) of the ID token has not passed.
 
-Các bước từ 2 đến 4 chỉ liên quan đến so sánh chuỗi và ngày, khá đơn giản nên chúng tôi sẽ không trình bày chi tiết ở đây.
+Steps 2 to 4 involve only string and date comparisons which are quite straightforward, so we won't detail them here.
 
-Bước đầu tiên phức tạp hơn và liên quan đến việc kiểm tra chữ ký mật mã. Bạn cần truy xuất keys endpoint [Discovery document](#discovery-document) bằng cách sử dụng giá trị metadata `jwks_uri`, sau đó truy xuất các khóa công khai của **NEMO ID** từ keys endpoint và thực hiện xác thực cục bộ.
+The first step is more complex, and involves cryptographic signature checking. You should retrieve the keys URI from the [Discovery document](#discovery-document) using the `jwks_uri` metadata value, then retrieve the public keys from the keys endpoint and perform the validation locally.
 
-Vì **NEMO ID** hiếm khi thay đổi các khóa công khai, nên bạn có thể lưu chúng vào bộ nhớ đệm bằng cách sử dụng chỉ thị bộ đệm của HTTP response. Việc xác thực này yêu cầu truy xuất và parse các chứng chỉ, đồng thời thực hiện các lệnh gọi mã hóa thích hợp để kiểm tra chữ ký. May mắn thay, có sẵn các thư viện được gỡ lỗi tốt bằng nhiều ngôn ngữ khác nhau để thực hiện điều này (xem [jwt.io](https://jwt.io/)).
+Since **NEMO ID** changes its public keys only infrequently, you can cache them using the cache directives of the HTTP response. This validation requires retrieving and parsing certificates, and making the appropriate cryptographic calls to check the signature Fortunately, there are well-debugged libraries available in a wide variety of languages to accomplish this (see [jwt.io](https://jwt.io/)).
 
 
 ### Obtaining user profile information
 
-Để có thêm thông tin hồ sơ về người dùng, bạn có thể sử dụng access token (mà ứng dụng của bạn nhận được trong [quy trình xác thực](#chứng-thực-người-dùng)) và chuẩn [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html):
+To obtain additional profile information about the user, you can use the access token (which your application receives during the [authentication flow](#6-authenticate-the-user)) và the [OpenID Connect](https://openid.net/specs/openid-connect-core-1_0.html) standard:
 
-1. Để tuân thủ OpenID, bạn phải bao gồm các giá trị scope `openid profile` trong [yêu cầu chứng thực](#2-gửi-yêu-cầu-chứng-thực-tới-nemo-id).\
-   Nếu bạn muốn bao gồm địa chỉ email và số điện thoại của người dùng, bạn có thể chỉ định các giá trị scope bổ sung tương ứng là `email` và `phone_number`. Để chỉ định cả `profile`, `email` và `phone_number`, bạn có thể bao gồm tham số sau trong URI yêu cầu chứng thực:
+1. To be OpenID-compliant, you must include the openid profile scope values in your [authentication request](#2-send-an-authentication-request-to-nemo-id).\
+   If you want the user's email address, phone number to be included, you can specify an additional scope value of `email`, `phone_number`. To specify both `profile`, `email`, `phone_number`, you can include the following parameter in your authentication request URI:
 
 ```
   scope=openid%20profile%20email%20phone_number
 ```
 
-2. Thêm access token vào authorization header và tạo một HTTPS `GET` request đến userinfo endpoint (mà bạn đã truy xuất từ [Discovery document](#discovery-document) sử dụng giá trị metadata `userinfo_endpoint`). Userinfo response bao gồm thông tin về người dùng, như được mô tả trong [OpenID Connect Standard Claims](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims) và giá trị metadata `claims_supported` của Discovery document. Người dùng có thể chọn cung cấp hoặc giữ lại một số trường nhất định, do đó bạn có thể không nhận được thông tin cho mọi trường đối với phạm vi truy cập được phép của mình.
+2. Add your access token to the authorization header and make an HTTPS GET request to the userinfo endpoint, which you should retrieve from the [Discovery document](#discovery-document) using the `userinfo_endpoint` metadata value. The userinfo response includes information about the user, as described in [OpenID Connect Standard Claims](https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims) and the `claims_supported` metadata value of the Discovery document. Users or their organizations may choose to supply or withhold certain fields, so you might not get information for every field for your authorized scopes of access.
 
 
-## Phụ lục
+## Appendix
 
 ### Client metadata
 
@@ -571,27 +571,27 @@ Vì **NEMO ID** hiếm khi thay đổi các khóa công khai, nên bạn có th�
   <tr>
     <td>Client ID</td>
     <td>(Required)</td>
-    <td>ID của client</td>
+    <td>Client's unique ID</td>
   </tr>
   <tr>
     <td>Client secret</td>
     <td>(Required, for Confidential Client)</td>
-    <td>Chuỗi ký tự dùng cho việc xác thực Client. Cần lưu trữ an toàn và không chia sẻ với bất kỳ ai.</td>
+    <td>Character string used for Client authentication. Needs to be stored securely and not shared with anyone.</td>
   </tr>
   <tr>
     <td>Redirect URI</td>
     <td>(Required)</td>
-    <td>Xác định nơi NEMO ID gửi phản hồi cho yêu cầu chứng thực của bạn.</td>
+    <td>Determines where NEMO ID sends the response to your authentication request.</td>
   </tr>
   <tr>
     <td>App name</td>
     <td>(Required)</td>
-    <td>Tên của ứng dụng yêu cầu sự đồng ý của người dùng.</td>
+    <td>The name of the app that requires user consent.</td>
   </tr>
   <tr>
     <td>Logo</td>
     <td>(Required)</td>
-    <td>Ảnh hiển thị trên "màn hình đồng ý", sẽ giúp người dùng nhận ra ứng dụng của bạn. Các định dạng hình ảnh được phép là <strong>JPG, PNG</strong>. Logo nên là hình vuông và có kích thước 120px x 120px để có kết quả tốt nhất.</td>
+    <td>The image displayed on the "consent screen", will help users recognize your app. Allowed image formats are <strong>JPG, PNG</strong>. The logo should be square and sized 120px x 120px for best results.</td>
   </tr>
   <tr>
     <td>Application home page</td>
@@ -601,12 +601,12 @@ Vì **NEMO ID** hiếm khi thay đổi các khóa công khai, nên bạn có th�
   <tr>
     <td>Application privacy policy</td>
     <td>(Optional)</td>
-    <td>Cung cấp cho người dùng liên kết đến <i>Chính sách bảo mật</i> của bạn</td>
+    <td>Provide users with a link to your <i>Privacy Policy</i></td>
   </tr>
   <tr>
     <td>Application terms of service</td>
     <td>(Optional)</td>
-    <td>Cung cấp cho người dùng liên kết đến <i>Điều khoản sử dụng</i> của bạn</td>
+    <td>Provide users with a link to your <i>Terms of Use</i></td>
   </tr>
 </table>
 
@@ -617,10 +617,10 @@ Vì **NEMO ID** hiếm khi thay đổi các khóa công khai, nên bạn có th�
 <table>
   <tr>
     <th colspan="1">Scope được RP request</th>
-    <th colspan="1">Các claim tương ứng OP trả về</th>
+    <th colspan="1">The corresponding claims returned by OP</th>
   </tr>
   <tr>
-    <td>openid (Bắt buộc)</td>
+    <td>openid (Required)</td>
     <td>sub</td>
   </tr>
   <tr>
@@ -641,78 +641,79 @@ Vì **NEMO ID** hiếm khi thay đổi các khóa công khai, nên bạn có th�
   </tr>
   <tr>
     <td><i>offline_access</i></td>
-    <td><i>Không trả claim.</i> Dùng để yêu cầu refresh token trong quá trình <a href="#4-trao-đổi-code-cho-access-token-và-id-token">trao đổi <code>code</code></a>.</td>
+    <td><i>Do not return any claim.</i> Used to request a refresh token during the <a href="#4-exchange-code-for-access-token-and-id-token"><code>code</code> exchange</a> process.</td>
   </tr>
 </table>  
 
-- Mô tả các claims:
+- Description of claims:
 
 <table>
   <tr>
     <th colspan="1">Claim</th>
-    <th colspan="1">Kiểu dữ liệu</th>
-    <th colspan="1">Mô tả</th>
+    <th colspan="1">Datatype</th>
+    <th colspan="1">Description</th>
   </tr>
   <tr>
     <td>sub</td>
     <td>string</td>
-    <td>ID người dùng.</td>
+    <td>User's ID.</td>
   </tr>
   <tr>
     <td>name</td>
     <td>string</td>
-    <td>Họ tên người dùng</td>
+    <td>User's full name</td>
   </tr>
   <tr>
     <td>gender</td>
     <td>string</td>
-    <td>ID người dùng.</td>
+    <td>User's gender.</td>
   </tr>
   <tr>
     <td>profile_picture</td>
     <td>string</td>
-    <td>URL ảnh đại diện người dùng.</td>
+    <td>User's avatar URI.</td>
   </tr>
   <tr>
     <td>email</td>
     <td>string</td>
-    <td>ID người dùng.</td>
+    <td>User's email.</td>
   </tr>
   <tr>
     <td>email_verified</td>
     <td>boolean</td>
-    <td>Email đã xác thực hay chưa.</td>
+    <td>Email is verified or not.</td>
   </tr>
   <tr>
     <td>phone_number</td>
     <td>string</td>
-    <td>SĐT người dùng.</td>
+    <td>User's phone number.</td>
   </tr>
   <tr>
     <td>phone_number_verified</td>
     <td>boolean</td>
-    <td>SĐT đã xác thực hay chưa.</td>
+    <td>Phone number is verified or not.</td>
   </tr>
   <tr>
     <td>is_guest</td>
     <td>boolean</td>
-    <td>Tài khoản có phải tài khoản khách không.</td>
+    <td>Account is guest or not.</td>
   </tr>
 </table>
 
 ### Discovery document
 
-Giao thức OpenID Connect yêu cầu sử dụng nhiều endpoint để chứng thực người dùng, và để yêu cầu các tài nguyên bao gồm các token và thông tin người dùng.
+The OpenID Connect protocol requires the use of multiple endpoints for authenticating users, and for requesting resources including tokens, user information, and public keys.
 
-Để đơn giản hóa việc triển khai và tăng tính linh hoạt, OpenID Connect cho phép sử dụng "Tài liệu khám phá" (Discovery document), tài liệu JSON được tìm thấy tại một vị trí phổ biến, chứa các cặp key-value cung cấp chi tiết về cấu hình của nhà cung cấp OpenID Connect, bao gồm URI endpoint của authorization, token, revocation và userinfo. Discovery document cho dịch vụ OpenID Connect của **NEMO ID** có thể được lấy từ:
+To simplify implementations and increase flexibility, OpenID Connect allows the use of a "Discovery document," a JSON document found at a well-known location containing key-value pairs which provide details about the OpenID Connect provider's configuration, including the URIs of the authorization, token, revocation, userinfo, and public-keys endpoints. The Discovery document for **NEMO ID**'s OpenID Connect service may be retrieved from:
 
 ```
   https://gid.nemoverse.io/.well-known/openid-configuration
 ```
 
-Để sử dụng các dịch vụ OpenID Connect của **NEMO ID**, bạn nên hard-code Discovery document URI trên vào ứng dụng của bạn. Ứng dụng của bạn fetch document, áp dụng các quy tắc bộ nhớ đệm (caching rule) trong response, sau đó truy xuất các endpoint URI từ đó nếu cần. Ví dụ: để chứng thực người dùng, code của bạn sẽ truy xuất giá trị metadata `authorization_endpoint` (`https://gid.nemoverse.io/auth` trong ví dụ bên dưới) làm base URI cho các yêu cầu chứng thực được gửi tới **NEMO ID**.
+To use **NEMO ID**'s OpenID Connect services, you should hard-code the Discovery-document URI into your application. Your application fetches the document, applies caching rules in the response, then retrieves endpoint URIs from it as needed. For example, to authenticate a user, your code would retrieve the authorization_endpoint metadata value (https://gid.nemoverse.io/auth in the example below) as the base URI for authentication requests that are sent to **NEMO ID**.
 
-Đây là một ví dụ về một tài liệu như vậy; tên trường là những tên được chỉ định trong [OpenID Connect Discovery 1.0](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata) (tham khảo tài liệu đó để biết ý nghĩa của chúng). Các giá trị hoàn toàn mang tính minh họa và có thể thay đổi, mặc dù chúng được sao chép từ phiên bản gần đây của **NEMO ID** Discovery document thực tế:
+
+Here is an example of such a document; the field names are those specified in [OpenID Connect Discovery 1.0](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata) (refer to that document for their meanings). The values are purely illustrative and might change, although they are copied from a recent version of the actual **NEMO ID** Discovery document:
 
 ```JSON
   {
@@ -832,7 +833,7 @@ Giao thức OpenID Connect yêu cầu sử dụng nhiều endpoint để chứng
   }
 ```
 
-Bạn có thể tránh HTTP round-trip bằng cách caching các giá trị từ Discovery document. Các Standard HTTP caching header được sử dụng và phải được tuân thủ.
+You may be able to avoid an HTTP round-trip by caching the values from the Discovery document. Standard HTTP caching headers are used and should be respected.
 
 
 ## Các endpoint thường sử dụng:
@@ -868,15 +869,15 @@ Bạn có thể tránh HTTP round-trip bằng cách caching các giá trị từ
   </tr>
 </table>
 
-Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.com/file/d/1G7l8Oz8i9YgmWOhslU57OlVytKM7LkDh/view?usp=sharing) (Cần request để truy cập).
+Download Postman's collection of **NEMO ID** [here](https://drive.google.com/file/d/1G7l8Oz8i9YgmWOhslU57OlVytKM7LkDh/view?usp=sharing)
 
 
-### Endpoint authorization
+### Authorization endpoint
 
 <table>
   <tr>
-    <th colspan="1">Mô tả</th>
-    <th colspan="1">Endpoint dùng để request đăng nhập user phía NEMO ID.</th>
+    <th colspan="1">Description</th>
+    <th colspan="1">Endpoint is used to request user login from NEMO ID.</th>
   </tr>
   <tr>
     <td>URL</td>
@@ -891,34 +892,34 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     <td>
       <ul>
         <li><i>client_id</i> (Required): Client ID.</li>
-        <li><i>response_type</i> (Required): Kiểu flow đăng nhập.</li>
-        <li><i>redirect_uri</i> (Required): URI mà sau khi đăng nhập được redirect về.</li>
-        <li><i>scope</i> (Required): Scope mà Client muốn OP trả về.</li>
-        <li><i>code_challenge</i> (Required): Mã hash trong PKCE flow.</li>
-        <li><i>state</i> (Optional): Một random string để đảm bảo state trước lúc đăng nhập và sau khi redirect về client.</li>
-        <li><i>prompt</i> (Optional): Truyền thêm prompt=create để redirect trực tiếp đến trang signup. Nếu không, redirect đến trang signin.</li>
+        <li><i>response_type</i> (Required): Flow type.</li>
+        <li><i>redirect_uri</i> (Required): The URI that is redirected after logging in.</li>
+        <li><i>scope</i> (Required): The scope that the Client wants the OP to return.</li>
+        <li><i>code_challenge</i> (Required): Hash code in PKCE flow.</li>
+        <li><i>state</i> (Optional): A random string to ensure state before logging in and after redirecting to the client.</li>
+        <li><i>prompt</i> (Optional): Pass prompt=create to redirect directly to the signup page. If not, redirect to the signin page.</li>
       </ul>
     </td>
   </tr>
   <tr>
-    <td>Ví dụ</td>
+    <td>Example</td>
     <td>https://gid.nemoverse.io/auth?client_id=nemo&response_type=code&redirect_uri=http://localhost:3000&scope=openid%20profile%20offline_access&code_challenge=On553uJ0nsTwUnJix-zDmDjKH73bnzdShkE4vxSojUE&code_challenge_method=S256</td>
   </tr>
   <tr>
     <td>Response</td>
-    <td>Page đăng nhập/ đăng ký</td>
+    <td>Login/registration page</td>
   </tr>
 </table>
 
 
-### Endpoint get token
+### Exchange token endpoint
 
-**(Nếu Client là native thì bỏ qua header Authorization)**
+**(If the Client is native, ignore the Authorization header)**
 
 <table>
   <tr>
-    <th colspan="1">Mô tả</th>
-    <th colspan="1">Endpoint dùng để get bộ token (IT, AT, RT).</th>
+    <th colspan="1">Description</th>
+    <th colspan="1">Endpoint is used to get token set (IT, AT, RT).</th>
   </tr>
   <tr>
     <td>URL</td>
@@ -935,10 +936,10 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
         <li>code<i>: Authorization Code.</i></li>
         <li>client_id<i>: Client ID.</i></li>
         <li>grant_type<i>: "authorization_code".</i></li>
-        <li>redirect_uri<i>: URI sau khi đăng nhập được redirect về.</i></li>
-        <li><i>code_verifier</i>: Đoạn code được decode từ <i>code_challenge</i> thông qua giải thuật <i>code_challenge_method</i>.</li>
+        <li>redirect_uri<i>: URI after login is redirected.</i></li>
+        <li><i>code_verifier</i>: The code is decoded from <i>code_challenge</i> through the <i>code_challenge_method</i> algorithm.</li>
       </ul>
-      <p>Ví dụ:</p>
+      <p>Example:</p>
       <code>{ "code": "o0YGAoiEi3ouJDCbPF0b5VdgOwMELe6QVLXiqaC19XJ", "client_id": "nemo", "grant_type": "authorization_code", "redirect_uri": "http://localhost:3000", "code_verifier": "B2D9gzapwlSG4McXvRqw0BiSWYALvASXVzRbHgpz62ZQahVUoOOFmIVEJK70eg3OwQrHDbatMcpUe5Sq2r2nFrKR071URhCtgbHRHxKBa1d5pfp8J9CK6YDCIdl" }</code>
     </td>
   </tr>
@@ -946,7 +947,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     <td>Headers</td>
     <td>
       <code>{  "Content-Type": "application/x-www-form-urlencoded",  "Authorization": "Basic " + Base64("[client_id]:[client_secret]")}</code>
-      <p>Trong đó:</p>
+      <p>With:</p>
       <ul>
         <li><i>client_id</i>: Client ID.</li>
         <li><i>client_secret</i>: Client Secret.</li>
@@ -954,23 +955,23 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     </td>
   </tr>
   <tr>
-    <td>Response khi code hợp lệ (200)</td>
+    <td>Response when the code is valid (200)</td>
     <td><code>{ "access_token": "H_Mf22Cj0FnYIw3KY65BYJOBsUjCufmqAafJLWtvium",   "expires_in": 3600,   "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRkNUdPY293M2lQa1R6SndBZG5kYlFRR2dHNTRucy1JQ1JlaXRYcGFPSDQifQ.eyJzdWIiOiI2MmNiY2Q2OGMwMGJjODJkMzhmNmZhMTMiLCJhdF9oYXNoIjoiRmxJY0NtaW90ZW43LXZhZWY1U2NGUSIsImF1ZCI6Im5lbW8iLCJleHAiOjE2NjUzNzMyOTMsImlhdCI6MTY2NTM2OTY5MywiaXNzIjoiaHR0cHM6Ly9kZXYxLmhlcmFwby52biJ9.WXqw9RqoF9wdbGHBah8BP386HMN-j250qsmDsM2k0pJa_6y2VFseTB_McsJoVD0mPa_iTvyKX0vUz25A4lJfUM8z4pBmGu3FJpS4Vodn2dlvOHn5HcJUvU2jZYyhgXAo8fj0O3hSUmxoGlzkLiv3F6Ui0sGrPV6eM_7FXTUHUkLxOSFHZIcj6zcp5COclcU-buQJSZUThBpaRtt_R6719Oi3pkoYm3whQZzc8sL6ISGBHG1y-abjLPXQnQilnxh42K9miWXG_rtRxUJGPjdHrVR41k4gl-f-s5PbzfXvpKROfE65DhcyzO-o6Nlw_AHPuADnI_dY5k5p2Y_Mig1fUw",   "refresh_token": "R3zdIkbIyNnRn5AHvtz1OE3vb_tbEJ5xtywpVzoxru-",   "scope": "openid profile",   "token_type": "Bearer" }</code></td>
   </tr>
   <tr>
-    <td>Response khi code không hợp lệ (400)</td>
+    <td>RespResponse when the code is not valid (400)</td>
     <td><code>{ "error": "invalid_grant",   "error_description": "grant request is invalid" }</code></td>
   </tr>
 </table>
 
-### Endpoint validate Access Token:
+### Access Token validation endpoint:
 
-**(Nếu Client là native thì bỏ qua header Authorization và thêm field client_id trong body)**
+**(If the Client is native, skip the Authorization header and add the client_id field in the body)**
 
 <table>
   <tr>
-    <th colspan="1">Mô tả</th>
-    <th colspan="1">API validate Access Token</th>
+    <th colspan="1">Description</th>
+    <th colspan="1">Endpoint is used to validate access token</th>
   </tr>
   <tr>
     <td>URL</td>
@@ -987,7 +988,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
         <li><i>token</i>: Access Token.</li>
         <li><i>client_id</i>: Client ID.</li>
       </ul>
-      <p>Ví dụ:</p>
+      <p>Example:</p>
       <code>{  token: "hldVr1QRjTF65eKoEoxQI5YLot12NyrUnVlkAZV4W_j"  client_id: "nemo"}</code>
     </td>
   </tr>
@@ -1003,21 +1004,21 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     </td>
   </tr>
   <tr>
-    <td>Response khi code hợp lệ (200)</td>
+    <td>Response when the token is valid (200)</td>
     <td><code>{ "active": true,   "sub": "62cbcd68c00bc82d38f6fa13",   "client_id": "sia-lms",   "exp": 1667212097,   "iat": 1667208497,   "iss": "https://gid.nemoverse.io",   "scope": "openid profile",   "token_type": "Bearer" }</code></td>
   </tr>
   <tr>
-    <td>Response khi code không hợp lệ (401)</td>
+    <td>Response when the token is not valid (401)</td>
     <td><code>{ "active": false }</code></td>
   </tr>
 </table>
 
-### Endpoint get thông tin người dùng:
+### Get user information endpoint:
 
 <table>
   <tr>
-    <th colspan="1">Mô tả</th>
-    <th colspan="1">Endpoint get thông tin người dùng.</th>
+    <th colspan="1">Description</th>
+    <th colspan="1">Endpoint is used to get user information.</th>
   </tr>
   <tr>
     <td>URL</td>
@@ -1043,23 +1044,23 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     <td><code>{ "Authorization": "Bearer [access_token]" }</code></td>
   </tr>
   <tr>
-    <td>Response khi code hợp lệ (200)</td>
+    <td>Response when the token is valid (200)</td>
     <td><code>{ "sub": "62cbcd68c00bc82d38f6fa13",   "name": "tiến huỳnh ",   "gender": "male", "profile_picture": "https://gid.nemoverse.io/public/upload/10-14-Night-f9f9.jpg",   "email": "tien.huynh@gosu.vn",   "email_verified": true,   "phone_number": "",   "phone_number_verified": false }</code></td>
   </tr>
   <tr>
-    <td>Response khi code không hợp lệ (401)</td>
+    <td>Response when the token is not valid (401)</td>
     <td><code>{ "error": "invalid_token",   "error_description": "invalid token provided" }</code></td>
   </tr>
 </table>
 
-### Endpoint refresh token
+### Refresh token endpoint
 
-**(Nếu Client là native thì bỏ qua header Authorization)**
+**(If the Client is native, ignore the Authorization header)**
 
 <table>
   <tr>
-    <th colspan="1">Mô tả</th>
-    <th colspan="1">Endpoint refresh ID Token và Access Token mới.</th>
+    <th colspan="1">Description</th>
+    <th colspan="1">Endpoint is userd to refresh new ID Token and Access Token.</th>
   </tr>
   <tr>
     <td>URL</td>
@@ -1092,23 +1093,23 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     </td>
   </tr>
   <tr>
-    <td>Response khi code hợp lệ (200)</td>
+    <td>Response when token is valid (200)</td>
     <td><code>{ "access_token": "fSoRXvSOGq1rJKpuonBWlL_R7SR4_96OBvOL2uRt9pF",   "expires_in": 3600,   "id_token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRkNUdPY293M2lQa1R6SndBZG5kYlFRR2dHNTRucy1JQ1JlaXRYcGFPSDQifQ.eyJzdWIiOiI2MzVjZmU3OTBiY2FkYTA4NTk5OWI0MzQiLCJhdF9oYXNoIjoiTklUZldnX2xJVXU4WjRsMVBQaVNsQSIsImF1ZCI6InNpYS1sbXMiLCJleHAiOjE2NjcyMTk1MDYsImlhdCI6MTY2NzIxNTkwNiwiaXNzIjoiaHR0cHM6Ly9naWQtdWF0Lm5lbW92ZXJzZS5pbyJ9.ki6W_OUnfGYiTPe-0b7Id8C7aWVqTBmnV5V4WJ_9Lh9ayJj9-0mNjHqV3Im1EY21ywPYVQgX4EOiGsThOT18Hn8RAzitN7YMxzLtdck48MhLT92l8VLe4RFGUpUf-eRBbnPJSf7Udb9jJEW9Q_q10zlr8DGmeSEPdsbChw76XF3QTj2d5VXebSGc-_CprF3V1nb4_tT326fFiFB1nNJIbIx1rs4NMKP-VUSx8Z0I50sQ-yREeaopmAqe94fAzB-MZi5EDoK9lG5H01bJsUY5ERI-HhAMbGKGdyVYdEl56W-utdgMqIBJuyGeHy6zXOqKzcKi5QdKea5n6a9K9PQ43w",   "refresh_token": "2yJrqnbZFFkMV2Dw8662wzjNkIYAi3cA36dzX3Clonz",   "scope": "openid profile",   "token_type": "Bearer" }</code></td>
   </tr>
   <tr>
-    <td>Response khi code không hợp lệ (400)</td>
+    <td>Response when token is not valid (400)</td>
     <td><code>{ "error": "invalid_grant",   "error_description": "grant request is invalid" }</code></td>
   </tr>
 </table>
 
-### Endpoint revoke token
+### Revoke token endpoint
 
-**(Nếu Client là native thì bỏ qua header Authorization và thêm field client_id trong body).**
+**(If the Client is native, skip the Authorization header and add the client_id field in the body).**
 
 <table>
   <tr>
-    <th colspan="1">Mô tả</th>
-    <th colspan="1">API revoke refresh token hoặc access token.</th>
+    <th colspan="1">Description</th>
+    <th colspan="1">API is used to revoke refresh token or access token.</th>
   </tr>
   <tr>
     <td>URL</td>
@@ -1133,7 +1134,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     <td>Headers</td>
     <td>
       <code>{  "Content-Type": "application/x-www-form-urlencoded",  "Authorization": "Basic " + Base64("[client_id]:[client_secret]")}</code>
-      <p>Trong đó:</p>
+      <p>With:</p>
       <ul>
         <li><i>client_id</i>: Client ID.</li>
         <li><i>client_secret</i>: Client Secret.</li>
@@ -1141,7 +1142,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
     </td>
   </tr>
   <tr>
-    <td>Response khi code hợp lệ (200)</td>
+    <td>Response when the token is valid (200)</td>
     <td>(Không data).</td>
   </tr>
 </table>
@@ -1153,6 +1154,6 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
 - [iOS SDK](https://github.com/gosusdk/ios-nemosdk_iap_demo)
 
 
-## Tuân thủ OpenID Connect
+## OpenID Connect compliance
 
-Hệ thống xác thực OAuth 2.0 của **NEMO ID** hỗ trợ các [tính năng bắt buộc](https://openid.net/specs/openid-connect-core-1_0.html#ServerMTI) của đặc tả [OpenID Connect Core](https://openid.net/specs/openid-connect-core-1_0.html).
+**NEMO ID**'s OAuth 2.0 authentication system supports the [required features](https://openid.net/specs/openid-connect-core-1_0.html#ServerMTI) of the [OpenID Connect Core](https://openid.net/specs/openid-connect-core-1_0.html) specification.
