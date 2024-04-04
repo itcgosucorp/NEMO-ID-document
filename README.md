@@ -281,7 +281,7 @@ A successful response to this request contains the following fields in a JSON fo
   </tr>
   <tr>
     <td><code>scope</code></td>
-    <td>Danh sách phạm vi truy cập được cấp bởi access_token, thể hiện dưới dạng chuỗi phân biệt chữ hoa chữ thường, ngăn cách bằng dấu cách.</td>
+    <td>The scopes of access granted by the access_token expressed as a list of space-delimited, case-sensitive strings.</td>
   </tr>
   <tr>
     <td><code>token_type</code></td>
@@ -596,7 +596,7 @@ To obtain additional profile information about the user, you can use the access 
   <tr>
     <td>Application home page</td>
     <td>(Optional)</td>
-    <td>Cung cấp cho người dùng một liên kết đến trang chủ của bạn</td>
+    <td>Give users a link to your homepage</td>
   </tr>
   <tr>
     <td>Application privacy policy</td>
@@ -612,7 +612,7 @@ To obtain additional profile information about the user, you can use the access 
 
 ### Scopes và Claims
 
-- Danh sách scope:
+- List of scopes:
 
 <table>
   <tr>
@@ -836,7 +836,7 @@ Here is an example of such a document; the field names are those specified in [O
 You may be able to avoid an HTTP round-trip by caching the values from the Discovery document. Standard HTTP caching headers are used and should be respected.
 
 
-## Các endpoint thường sử dụng:
+## Commonly used endpoints:
 
 <table>
   <tr>
@@ -1035,7 +1035,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
         <li><i>token</i>: Access Token.</li>
         <li><i>client_id</i>: Client ID.</li>
       </ul>
-      <p>Ví dụ:</p>
+      <p>Example:</p>
       <code>{ token: "hldVr1QRjTF65eKoEoxQI5YLot12NyrUnVlkAZV4W_j"  client_id: "nemo" }</code>
     </td>
   </tr>
@@ -1078,7 +1078,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
         <li><i>client_id</i>: Client ID.</li>
         <li><i>refresh_token</i>: Refresh Token.</li>
       </ul>
-    <p>Ví dụ:</p>
+    <p>Example:</p>
     <code>{ "client_id": "nemo",  grant_type: "refresh_token",  refresh_token: "2yJrqnbZFFkMV2Dw8662wzjNkIYAi3cA36dzX3Clonz" }</code>
   </tr>
   <tr>
@@ -1127,7 +1127,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
         <li><i>token_type_hint</i>: "refresh_token".</li>
         <li><i>client_id</i>: Client ID.</li>
       </ul>
-    <p>Ví dụ:</p>
+    <p>Example:</p>
     <code>{  token: "2yJrqnbZFFkMV2Dw8662wzjNkIYAi3cA36dzX3Clonz", token_type_hint: "refresh_token", client_id: "nemo" }</code>
   </tr>
   <tr>
@@ -1143,7 +1143,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
   </tr>
   <tr>
     <td>Response when the token is valid (200)</td>
-    <td>(Không data).</td>
+    <td>(No data).</td>
   </tr>
 </table>
 
