@@ -23,7 +23,7 @@ _\* Chữ in nghiêng có giá trị thay đổi tùy theo ứng dụng đăng k
   </tr>
   <tr>
     <td>Issuer</td>
-    <td><i>https://gid.nemoverse.io</i></td>
+    <td><i>https://account.nemoverse.io</i></td>
   </tr>
 </table>
 
@@ -150,7 +150,7 @@ Với việc sử dụng PKCE ([RFC 7636](http://tools.ietf.org/html/rfc7636)), 
 
 #### 2. Gửi yêu cầu chứng thực tới NEMO ID
 
-Bước tiếp theo là hình thành một yêu cầu HTTPS `GET` với các tham số URI thích hợp. Lưu ý việc sử dụng HTTPS thay vì HTTP trong tất cả các bước của quy trình này; Kết nối HTTP sẽ bị từ chối. Bạn nên truy xuất base URI từ [Discovery document](#discovery-document), sử dụng giá trị của `authorization_endpoint` metadata. Phần bên dưới giả định base URI là `https://gid.nemoverse.io/auth`.
+Bước tiếp theo là hình thành một yêu cầu HTTPS `GET` với các tham số URI thích hợp. Lưu ý việc sử dụng HTTPS thay vì HTTP trong tất cả các bước của quy trình này; Kết nối HTTP sẽ bị từ chối. Bạn nên truy xuất base URI từ [Discovery document](#discovery-document), sử dụng giá trị của `authorization_endpoint` metadata. Phần bên dưới giả định base URI là `https://account.nemoverse.io/auth`.
 
 Đối với yêu cầu cơ bản, hãy chỉ định các tham số sau:
 
@@ -175,7 +175,7 @@ Bước tiếp theo là hình thành một yêu cầu HTTPS `GET` với các tha
 Dưới đây là một ví dụ về OpenID Connect authentication URI hoàn chỉnh, với các ngắt dòng và khoảng trắng để dễ đọc:
 
 ```
-  https://gid.nemoverse.io/auth?
+  https://account.nemoverse.io/auth?
     response_type=code&
     client_id=c72fa486-93f3-4d10-a558-93e878e6e14b.nemoverse&
     scope=openid%20email%20phone_number%20profile&
@@ -196,7 +196,7 @@ Response được gửi đến `redirect_uri` mà bạn đã chỉ định trong
   https://wallet.nemoverse.io/callback?
     code=4/P7q7W91a-oMsCeLvIaQm6bTrgtp7&
     state=csrf%3D38r5719ru3e1%26url%3Dhttps%3A%2F%2Fnemoverse.io%2Fwallet&
-    iss=https%3A%2F%2Fgid.nemoverse.io
+    iss=https%3A%2F%2Faccount.nemoverse.io
 ```
 
 Trên server, bạn phải xác nhận rằng `state` nhận được từ **NEMO ID** khớp với session token mà bạn đã tạo ở [Bước 1](#1-tạo-anti-forgery-state-token-nonce-code-verifier-và-code-challenge). Quá trình xác minh hai chiều này giúp đảm bảo rằng người dùng, chứ không phải mã độc, đang thực hiện request.
@@ -218,7 +218,7 @@ Trên server, bạn phải xác nhận rằng `state` nhận được từ **NEM
 
 Response bao gồm một parameter `code`, là một mã chứng thực sử dụng một lần mà server của bạn có thể dùng để trao đổi lấy access token và ID token. Server của bạn thực hiện trao đổi này bằng cách gửi một HTTPS `POST` request. `POST` request được gửi đến token endpoint, mà bạn có thể truy xuất từ [Discovery document](#discovery-document) qua giá trị của metadata `token_endpoint`.
 
-Phần bên dưới giả định endpoint này là `https://gid.nemoverse.io/token`. Request phải bao gồm các tham số sau trong `POST` body:
+Phần bên dưới giả định endpoint này là `https://account.nemoverse.io/token`. Request phải bao gồm các tham số sau trong `POST` body:
 
 <table>
   <tr>
@@ -252,7 +252,7 @@ Request thực tế có thể giống như ví dụ sau:
 
 ```
   POST /token HTTP/1.1
-  Host: gid.nemoverse.ioAuthorization: Basic c2lhLWxtczpzaWEtbG1z
+  Host: account.nemoverse.ioAuthorization: Basic c2lhLWxtczpzaWEtbG1z
   Content-Type: application/x-www-form-urlencoded
   
   code=4/P7q7W91a-oMsCeLvIaQm6bTrgtp7&
@@ -329,7 +329,7 @@ ID token là một JSON object gồm một bộ các cặp name/value. Đây là
     "aud": "c72fa486-93f3-4d10-a558-93e878e6e14b.nemoverse",
     "exp": 1669605779,
     "iat": 1669602179,
-    "iss": "https://gid.nemoverse.io"
+    "iss": "https://account.nemoverse.io"
   }
 ```
 
@@ -359,7 +359,7 @@ ID token là một JSON object gồm một bộ các cặp name/value. Đây là
   <tr>
     <td><code>iss</code></td>
     <td>always</td>
-    <td>Issuer Identifier cho Issuer của response. Luôn là <code>https://gid.nemoverse.io</code> cho <strong>NEMO ID</strong> ID tokens.</td>
+    <td>Issuer Identifier cho Issuer của response. Luôn là <code>https://account.nemoverse.io</code> cho <strong>NEMO ID</strong> ID tokens.</td>
   </tr>
   <tr>
     <td><code>sub</code></td>
@@ -533,7 +533,7 @@ Việc xác thực ID token yêu cầu một số bước:
 
 1. Xác minh rằng ID token được ký hợp lệ bởi nhà phát hành. Mã thông báo do **NEMO ID** phát hành được ký bằng một trong các chứng chỉ có tại URI được chỉ định trong giá trị metadata `jwks_uri` của [Discovery document](#discovery-document).
 
-2. Xác minh rằng giá trị của claim `iss` trong ID token bằng với `https://gid.nemoverse.io` 
+2. Xác minh rằng giá trị của claim `iss` trong ID token bằng với `https://account.nemoverse.io` 
 
 3. Xác minh rằng giá trị của claim `aud` claim trong ID token bằng với client ID của ứng dụng của bạn.
 
@@ -709,16 +709,16 @@ Giao thức OpenID Connect yêu cầu sử dụng nhiều endpoint để chứng
 Để đơn giản hóa việc triển khai và tăng tính linh hoạt, OpenID Connect cho phép sử dụng "Tài liệu khám phá" (Discovery document), tài liệu JSON được tìm thấy tại một vị trí phổ biến, chứa các cặp key-value cung cấp chi tiết về cấu hình của nhà cung cấp OpenID Connect, bao gồm URI endpoint của authorization, token, revocation và userinfo. Discovery document cho dịch vụ OpenID Connect của **NEMO ID** có thể được lấy từ:
 
 ```
-  https://gid.nemoverse.io/.well-known/openid-configuration
+  https://account.nemoverse.io/.well-known/openid-configuration
 ```
 
-Để sử dụng các dịch vụ OpenID Connect của **NEMO ID**, bạn nên hard-code Discovery document URI trên vào ứng dụng của bạn. Ứng dụng của bạn fetch document, áp dụng các quy tắc bộ nhớ đệm (caching rule) trong response, sau đó truy xuất các endpoint URI từ đó nếu cần. Ví dụ: để chứng thực người dùng, code của bạn sẽ truy xuất giá trị metadata `authorization_endpoint` (`https://gid.nemoverse.io/auth` trong ví dụ bên dưới) làm base URI cho các yêu cầu chứng thực được gửi tới **NEMO ID**.
+Để sử dụng các dịch vụ OpenID Connect của **NEMO ID**, bạn nên hard-code Discovery document URI trên vào ứng dụng của bạn. Ứng dụng của bạn fetch document, áp dụng các quy tắc bộ nhớ đệm (caching rule) trong response, sau đó truy xuất các endpoint URI từ đó nếu cần. Ví dụ: để chứng thực người dùng, code của bạn sẽ truy xuất giá trị metadata `authorization_endpoint` (`https://account.nemoverse.io/auth` trong ví dụ bên dưới) làm base URI cho các yêu cầu chứng thực được gửi tới **NEMO ID**.
 
 Đây là một ví dụ về một tài liệu như vậy; tên trường là những tên được chỉ định trong [OpenID Connect Discovery 1.0](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata) (tham khảo tài liệu đó để biết ý nghĩa của chúng). Các giá trị hoàn toàn mang tính minh họa và có thể thay đổi, mặc dù chúng được sao chép từ phiên bản gần đây của **NEMO ID** Discovery document thực tế:
 
 ```JSON
   {
-    "authorization_endpoint": "https://gid.nemoverse.io/auth",
+    "authorization_endpoint": "https://account.nemoverse.io/auth",
     "claims_parameter_supported": false,
     "claims_supported": [
       "sub",
@@ -736,7 +736,7 @@ Giao thức OpenID Connect yêu cầu sử dụng nhiều endpoint để chứng
     "code_challenge_methods_supported": [
       "S256"
     ],
-    "end_session_endpoint": "https://gid.nemoverse.io/session/end",
+    "end_session_endpoint": "https://account.nemoverse.io/session/end",
     "grant_types_supported": [
       "implicit",
       "authorization_code",
@@ -748,9 +748,9 @@ Giao thức OpenID Connect yêu cầu sử dụng nhiều endpoint để chứng
       "PS256",
       "RS256"
     ],
-    "issuer": "https://gid.nemoverse.io",
-    "jwks_uri": "https://gid.nemoverse.io/jwks",
-    "registration_endpoint": "https://gid.nemoverse.io/reg",
+    "issuer": "https://account.nemoverse.io",
+    "jwks_uri": "https://account.nemoverse.io/jwks",
+    "registration_endpoint": "https://account.nemoverse.io/reg",
     "authorization_response_iss_parameter_supported": true,
     "response_modes_supported": [
       "form_post",
@@ -786,7 +786,7 @@ Giao thức OpenID Connect yêu cầu sử dụng nhiều endpoint để chứng
       "ES256",
       "EdDSA"
     ],
-    "token_endpoint": "https://gid.nemoverse.io/token",
+    "token_endpoint": "https://account.nemoverse.io/token",
     "request_object_signing_alg_values_supported": [
       "HS256",
       "RS256",
@@ -797,8 +797,8 @@ Giao thức OpenID Connect yêu cầu sử dụng nhiều endpoint để chứng
     "request_parameter_supported": false,
     "request_uri_parameter_supported": true,
     "require_request_uri_registration": true,
-    "userinfo_endpoint": "https://gid.nemoverse.io/me",
-    "introspection_endpoint": "https://gid.nemoverse.io/token/introspection",
+    "userinfo_endpoint": "https://account.nemoverse.io/me",
+    "introspection_endpoint": "https://account.nemoverse.io/token/introspection",
     "introspection_endpoint_auth_methods_supported": [
       "client_secret_basic",
       "client_secret_jwt",
@@ -813,7 +813,7 @@ Giao thức OpenID Connect yêu cầu sử dụng nhiều endpoint để chứng
       "ES256",
       "EdDSA"
     ],
-    "revocation_endpoint": "https://gid.nemoverse.io/token/revocation",
+    "revocation_endpoint": "https://account.nemoverse.io/token/revocation",
     "revocation_endpoint_auth_methods_supported": [
       "client_secret_basic",
       "client_secret_jwt",
@@ -882,7 +882,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/auth</td>
+    <td>https://account.nemoverse.io/auth</td>
   </tr>
   <tr>
     <td>Method</td>
@@ -904,7 +904,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
   </tr>
   <tr>
     <td>Ví dụ</td>
-    <td>https://gid.nemoverse.io/auth?client_id=nemo&response_type=code&redirect_uri=http://localhost:3000&scope=openid%20profile%20offline_access&code_challenge=On553uJ0nsTwUnJix-zDmDjKH73bnzdShkE4vxSojUE&code_challenge_method=S256</td>
+    <td>https://account.nemoverse.io/auth?client_id=nemo&response_type=code&redirect_uri=http://localhost:3000&scope=openid%20profile%20offline_access&code_challenge=On553uJ0nsTwUnJix-zDmDjKH73bnzdShkE4vxSojUE&code_challenge_method=S256</td>
   </tr>
   <tr>
     <td>Response</td>
@@ -924,7 +924,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/token</td>
+    <td>https://account.nemoverse.io/token</td>
   </tr>
   <tr>
     <td>Method</td>
@@ -976,7 +976,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/token/introspection</td>
+    <td>https://account.nemoverse.io/token/introspection</td>
   </tr>
   <tr>
     <td>Method</td>
@@ -1006,7 +1006,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
   </tr>
   <tr>
     <td>Response khi token hợp lệ (200)</td>
-    <td><code>{ "active": true,   "sub": "62cbcd68c00bc82d38f6fa13",   "client_id": "sia-lms",   "exp": 1667212097,   "iat": 1667208497,   "iss": "https://gid.nemoverse.io",   "scope": "openid profile",   "token_type": "Bearer" }</code></td>
+    <td><code>{ "active": true,   "sub": "62cbcd68c00bc82d38f6fa13",   "client_id": "sia-lms",   "exp": 1667212097,   "iat": 1667208497,   "iss": "https://account.nemoverse.io",   "scope": "openid profile",   "token_type": "Bearer" }</code></td>
   </tr>
   <tr>
     <td>Response khi token không hợp lệ (401)</td>
@@ -1023,7 +1023,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/me</td>
+    <td>https://account.nemoverse.io/me</td>
   </tr>
   <tr>
     <td>Method</td>
@@ -1046,7 +1046,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
   </tr>
   <tr>
     <td>Response khi token hợp lệ (200)</td>
-    <td><code>{ "sub": "62cbcd68c00bc82d38f6fa13",   "name": "tiến huỳnh ",   "gender": "male", "profile_picture": "https://gid.nemoverse.io/public/upload/10-14-Night-f9f9.jpg",   "email": "tien.huynh@gosu.vn",   "email_verified": true,   "phone_number": "",   "phone_number_verified": false }</code></td>
+    <td><code>{ "sub": "62cbcd68c00bc82d38f6fa13",   "name": "tiến huỳnh ",   "gender": "male", "profile_picture": "https://account.nemoverse.io/public/upload/10-14-Night-f9f9.jpg",   "email": "tien.huynh@gosu.vn",   "email_verified": true,   "phone_number": "",   "phone_number_verified": false }</code></td>
   </tr>
   <tr>
     <td>Response khi token không hợp lệ (401)</td>
@@ -1065,7 +1065,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/token</td>
+    <td>https://account.nemoverse.io/token</td>
   </tr>
   <tr>
     <td>Method</td>
@@ -1114,7 +1114,7 @@ Tải Postman collection của **NEMO ID** [tại đây](https://drive.google.co
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/token/revocation</td>
+    <td>https://account.nemoverse.io/token/revocation</td>
   </tr>
   <tr>
     <td>Method</td>

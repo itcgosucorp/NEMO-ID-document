@@ -23,7 +23,7 @@ _\* Italic text values vary depending on the application_
   </tr>
   <tr>
     <td>Issuer</td>
-    <td><i>https://gid.nemoverse.io</i></td>
+    <td><i>https://account.nemoverse.io</i></td>
   </tr>
 </table>
 
@@ -149,7 +149,7 @@ The following code demonstrates generating above tokens.
 
 #### 2. Send an authentication request to **NEMO ID**
 
-The next step is forming an HTTPS `GET` request with the appropriate URI parameters. Note the use of HTTPS rather than HTTP in all the steps of this process; HTTP connections are refused. You should retrieve the base URI from the [Discovery document](#discovery-document), using the `authorization_endpoint` metadata value. The following discussion assumes the base URI is `https://gid.nemoverse.io/auth`.
+The next step is forming an HTTPS `GET` request with the appropriate URI parameters. Note the use of HTTPS rather than HTTP in all the steps of this process; HTTP connections are refused. You should retrieve the base URI from the [Discovery document](#discovery-document), using the `authorization_endpoint` metadata value. The following discussion assumes the base URI is `https://account.nemoverse.io/auth`.
 
 For a basic request, specify the following parameters:
 
@@ -174,7 +174,7 @@ For a basic request, specify the following parameters:
 Here is an example of a complete OpenID Connect authentication URI, with line breaks and spaces for readability::
 
 ```
-  https://gid.nemoverse.io/auth?
+  https://account.nemoverse.io/auth?
     response_type=code&
     client_id=c72fa486-93f3-4d10-a558-93e878e6e14b.nemoverse&
     scope=openid%20email%20phone_number%20profile&
@@ -195,7 +195,7 @@ The response is sent to the `redirect_uri` that you specified in the [request](#
   https://wallet.nemoverse.io/callback?
     code=4/P7q7W91a-oMsCeLvIaQm6bTrgtp7&
     state=csrf%3D38r5719ru3e1%26url%3Dhttps%3A%2F%2Fnemoverse.io%2Fwallet&
-    iss=https%3A%2F%2Fgid.nemoverse.io
+    iss=https%3A%2F%2Faccount.nemoverse.io
 ```
 
 On the server, you must confirm that the `state` received from **NEMO ID** matches the session token you created in [Step 1](#1-create-an-anti-forgery-state-token-nonce-code-verifier-and-code-challenge). This round-trip verification helps to ensure that the user, not a malicious script, is making the request.
@@ -217,7 +217,7 @@ The following code demonstrates confirming the session tokens that you created i
 
 The response includes a `code` parameter, a one-time authorization code that your server can exchange for an access token and ID token. Your server makes this exchange by sending an HTTPS `POST` request. The `POST` request is sent to the token endpoint, which you should retrieve from the [Discovery document](#discovery-document) using the `token_endpoint` metadata value.
 
-The following discussion assumes the endpoint is `https://gid.nemoverse.io/token`. The request must include the following parameters in the `POST` body:
+The following discussion assumes the endpoint is `https://account.nemoverse.io/token`. The request must include the following parameters in the `POST` body:
 
 <table>
   <tr>
@@ -251,7 +251,7 @@ The actual request might look like the following example:
 
 ```
   POST /token HTTP/1.1
-  Host: gid.nemoverse.ioAuthorization: Basic c2lhLWxtczpzaWEtbG1z
+  Host: account.nemoverse.ioAuthorization: Basic c2lhLWxtczpzaWEtbG1z
   Content-Type: application/x-www-form-urlencoded
   
   code=4/P7q7W91a-oMsCeLvIaQm6bTrgtp7&
@@ -328,7 +328,7 @@ An ID token is a JSON object containing a set of name/value pairs. Here's an exa
     "aud": "c72fa486-93f3-4d10-a558-93e878e6e14b.nemoverse",
     "exp": 1669605779,
     "iat": 1669602179,
-    "iss": "https://gid.nemoverse.io"
+    "iss": "https://account.nemoverse.io"
   }
 ```
 
@@ -358,7 +358,7 @@ An ID token is a JSON object containing a set of name/value pairs. Here's an exa
   <tr>
     <td><code>iss</code></td>
     <td>always</td>
-    <td>The Issuer Identifier for the Issuer of the response. Always <code>https://gid.nemoverse.io</code> for ID tokens.</td>
+    <td>The Issuer Identifier for the Issuer of the response. Always <code>https://account.nemoverse.io</code> for ID tokens.</td>
   </tr>
   <tr>
     <td><code>sub</code></td>
@@ -531,7 +531,7 @@ Validation of an ID token requires several steps:
 
 1. Verify that the ID token is properly signed by the issuer. NEMO-ID-issued tokens are signed using one of the certificates found at the URI specified in the `jwks_uri` metadata value of the [Discovery document](#discovery-document).
 
-2. Verify that the value of the `iss` claim in the ID token is equal to `https://gid.nemoverse.io` 
+2. Verify that the value of the `iss` claim in the ID token is equal to `https://account.nemoverse.io` 
 
 3. Verify that the value of the `aud` claim in the ID token is equal to your app's client ID.
 
@@ -707,17 +707,17 @@ The OpenID Connect protocol requires the use of multiple endpoints for authentic
 To simplify implementations and increase flexibility, OpenID Connect allows the use of a "Discovery document," a JSON document found at a well-known location containing key-value pairs which provide details about the OpenID Connect provider's configuration, including the URIs of the authorization, token, revocation, userinfo, and public-keys endpoints. The Discovery document for **NEMO ID**'s OpenID Connect service may be retrieved from:
 
 ```
-  https://gid.nemoverse.io/.well-known/openid-configuration
+  https://account.nemoverse.io/.well-known/openid-configuration
 ```
 
-To use **NEMO ID**'s OpenID Connect services, you should hard-code the Discovery-document URI into your application. Your application fetches the document, applies caching rules in the response, then retrieves endpoint URIs from it as needed. For example, to authenticate a user, your code would retrieve the authorization_endpoint metadata value (https://gid.nemoverse.io/auth in the example below) as the base URI for authentication requests that are sent to **NEMO ID**.
+To use **NEMO ID**'s OpenID Connect services, you should hard-code the Discovery-document URI into your application. Your application fetches the document, applies caching rules in the response, then retrieves endpoint URIs from it as needed. For example, to authenticate a user, your code would retrieve the authorization_endpoint metadata value (https://account.nemoverse.io/auth in the example below) as the base URI for authentication requests that are sent to **NEMO ID**.
 
 
 Here is an example of such a document; the field names are those specified in [OpenID Connect Discovery 1.0](https://openid.net/specs/openid-connect-discovery-1_0.html#ProviderMetadata) (refer to that document for their meanings). The values are purely illustrative and might change, although they are copied from a recent version of the actual **NEMO ID** Discovery document:
 
 ```JSON
   {
-    "authorization_endpoint": "https://gid.nemoverse.io/auth",
+    "authorization_endpoint": "https://account.nemoverse.io/auth",
     "claims_parameter_supported": false,
     "claims_supported": [
       "sub",
@@ -735,7 +735,7 @@ Here is an example of such a document; the field names are those specified in [O
     "code_challenge_methods_supported": [
       "S256"
     ],
-    "end_session_endpoint": "https://gid.nemoverse.io/session/end",
+    "end_session_endpoint": "https://account.nemoverse.io/session/end",
     "grant_types_supported": [
       "implicit",
       "authorization_code",
@@ -747,9 +747,9 @@ Here is an example of such a document; the field names are those specified in [O
       "PS256",
       "RS256"
     ],
-    "issuer": "https://gid.nemoverse.io",
-    "jwks_uri": "https://gid.nemoverse.io/jwks",
-    "registration_endpoint": "https://gid.nemoverse.io/reg",
+    "issuer": "https://account.nemoverse.io",
+    "jwks_uri": "https://account.nemoverse.io/jwks",
+    "registration_endpoint": "https://account.nemoverse.io/reg",
     "authorization_response_iss_parameter_supported": true,
     "response_modes_supported": [
       "form_post",
@@ -785,7 +785,7 @@ Here is an example of such a document; the field names are those specified in [O
       "ES256",
       "EdDSA"
     ],
-    "token_endpoint": "https://gid.nemoverse.io/token",
+    "token_endpoint": "https://account.nemoverse.io/token",
     "request_object_signing_alg_values_supported": [
       "HS256",
       "RS256",
@@ -796,8 +796,8 @@ Here is an example of such a document; the field names are those specified in [O
     "request_parameter_supported": false,
     "request_uri_parameter_supported": true,
     "require_request_uri_registration": true,
-    "userinfo_endpoint": "https://gid.nemoverse.io/me",
-    "introspection_endpoint": "https://gid.nemoverse.io/token/introspection",
+    "userinfo_endpoint": "https://account.nemoverse.io/me",
+    "introspection_endpoint": "https://account.nemoverse.io/token/introspection",
     "introspection_endpoint_auth_methods_supported": [
       "client_secret_basic",
       "client_secret_jwt",
@@ -812,7 +812,7 @@ Here is an example of such a document; the field names are those specified in [O
       "ES256",
       "EdDSA"
     ],
-    "revocation_endpoint": "https://gid.nemoverse.io/token/revocation",
+    "revocation_endpoint": "https://account.nemoverse.io/token/revocation",
     "revocation_endpoint_auth_methods_supported": [
       "client_secret_basic",
       "client_secret_jwt",
@@ -881,7 +881,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/auth</td>
+    <td>https://account.nemoverse.io/auth</td>
   </tr>
   <tr>
     <td>Method</td>
@@ -903,7 +903,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
   </tr>
   <tr>
     <td>Example</td>
-    <td>https://gid.nemoverse.io/auth?client_id=nemo&response_type=code&redirect_uri=http://localhost:3000&scope=openid%20profile%20offline_access&code_challenge=On553uJ0nsTwUnJix-zDmDjKH73bnzdShkE4vxSojUE&code_challenge_method=S256</td>
+    <td>https://account.nemoverse.io/auth?client_id=nemo&response_type=code&redirect_uri=http://localhost:3000&scope=openid%20profile%20offline_access&code_challenge=On553uJ0nsTwUnJix-zDmDjKH73bnzdShkE4vxSojUE&code_challenge_method=S256</td>
   </tr>
   <tr>
     <td>Response</td>
@@ -923,7 +923,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/token</td>
+    <td>https://account.nemoverse.io/token</td>
   </tr>
   <tr>
     <td>Method</td>
@@ -975,7 +975,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/token/introspection</td>
+    <td>https://account.nemoverse.io/token/introspection</td>
   </tr>
   <tr>
     <td>Method</td>
@@ -1005,7 +1005,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
   </tr>
   <tr>
     <td>Response when the token is valid (200)</td>
-    <td><code>{ "active": true,   "sub": "62cbcd68c00bc82d38f6fa13",   "client_id": "sia-lms",   "exp": 1667212097,   "iat": 1667208497,   "iss": "https://gid.nemoverse.io",   "scope": "openid profile",   "token_type": "Bearer" }</code></td>
+    <td><code>{ "active": true,   "sub": "62cbcd68c00bc82d38f6fa13",   "client_id": "sia-lms",   "exp": 1667212097,   "iat": 1667208497,   "iss": "https://account.nemoverse.io",   "scope": "openid profile",   "token_type": "Bearer" }</code></td>
   </tr>
   <tr>
     <td>Response when the token is not valid (401)</td>
@@ -1022,7 +1022,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/me</td>
+    <td>https://account.nemoverse.io/me</td>
   </tr>
   <tr>
     <td>Method</td>
@@ -1045,7 +1045,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
   </tr>
   <tr>
     <td>Response when the token is valid (200)</td>
-    <td><code>{ "sub": "62cbcd68c00bc82d38f6fa13",   "name": "tiến huỳnh ",   "gender": "male", "profile_picture": "https://gid.nemoverse.io/public/upload/10-14-Night-f9f9.jpg",   "email": "tien.huynh@gosu.vn",   "email_verified": true,   "phone_number": "",   "phone_number_verified": false }</code></td>
+    <td><code>{ "sub": "62cbcd68c00bc82d38f6fa13",   "name": "tiến huỳnh ",   "gender": "male", "profile_picture": "https://account.nemoverse.io/public/upload/10-14-Night-f9f9.jpg",   "email": "tien.huynh@gosu.vn",   "email_verified": true,   "phone_number": "",   "phone_number_verified": false }</code></td>
   </tr>
   <tr>
     <td>Response when the token is not valid (401)</td>
@@ -1064,7 +1064,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/token</td>
+    <td>https://account.nemoverse.io/token</td>
   </tr>
   <tr>
     <td>Method</td>
@@ -1113,7 +1113,7 @@ Download Postman's collection of **NEMO ID** [here](https://drive.google.com/fil
   </tr>
   <tr>
     <td>URL</td>
-    <td>https://gid.nemoverse.io/token/revocation</td>
+    <td>https://account.nemoverse.io/token/revocation</td>
   </tr>
   <tr>
     <td>Method</td>
